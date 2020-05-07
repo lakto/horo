@@ -1,0 +1,45 @@
+
+$border: 6px;
+$hoursSize: 200px;
+$minutesSize: $hoursSize/2;
+$secondsSize: $hoursSize/3;
+
+.clock {
+  font-family: inherit;
+  color: #eeeeee;
+  .hours,
+  .minutes,
+  .seconds {
+    border-radius: 50%;
+    text-align: center;
+    position: absolute;
+  }
+  .seconds {
+    width: $secondsSize;
+    height: $secondsSize;
+    top: ($hoursSize / 2) + $border - ($secondsSize / 2);
+    left: ($hoursSize / 2) + $border - ($secondsSize / 2);
+    line-height: 1.5;
+    font-size: $secondsSize / 1.618;
+    z-index: 1;
+    background-color: rgba(222, 222, 222, 0.41);
+  }
+  .minutes {
+    //        background-color: rgba(0, 222, 222, 0.41);
+    width: $minutesSize;
+    height: $minutesSize;
+    top: ($hoursSize / 2) + $border - ($minutesSize / 2);
+    left: ($hoursSize / 2) + $border - ($minutesSize / 2);
+    line-height: 1.5;
+    font-size: $minutesSize / 1.618;
+    z-index: 2;
+  }
+  .hours {
+    width: $hoursSize;
+    height: $hoursSize;
+    line-height: 1.5;
+    font-size: $hoursSize / 1.618;
+    z-index: 0;
+    border: $border solid rgba(244, 244, 244, 1);
+  }
+}

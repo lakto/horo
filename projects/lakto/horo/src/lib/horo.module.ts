@@ -5,8 +5,7 @@ import { HoroComponent } from './horo.component';
 
 @NgModule({
   declarations: [HoroComponent],
-  imports: [
-  ],
+  imports: [],
   exports: [HoroComponent]
 })
 export class HoroModule { }
