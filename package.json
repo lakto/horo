@@ -1,6 +1,6 @@
 {
   "name": "horo",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -8,6 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
+    "test-lib": "ng test --watch=false --browsers=ChromeHeadless --project @lakto/horo",
     "update-lib-version": "cd projects/lakto/horo/ && npm version --minor && cd ../../../"
   },
   "private": true,
