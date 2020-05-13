@@ -9,16 +9,21 @@ define update-version
 	# update version: first as dry-run (which doesn't exist with npm version). The user has to confirm the update
 	CURRENT_VERSION=`node -pe "require('./package.json').version"` && \
 	npm version $(1) --preid=$(2) --git-tag-version=false --commit-hooks=false && \
-	VERSION=`node -pe "require('./package.json').version"` && \
-	echo -n "This will update from $$CURRENT_VERSION to $$VERSION ($(1)). Do you want to continue? [Y/n]" && \
+	NEXT_VERSION=`node -pe "require('./package.json').version"` && \
+	echo -n "This will update from $$CURRENT_VERSION to $$NEXT_VERSION ($(1)). Do you want to continue? [Y/n]" && \
 	read ans && \
 	([ $${ans:-N} != Y ] && \
 	npm version $$CURRENT_VERSION --git-tag-version=false --commit-hooks=false && exit 1) || \
 	([ $${ans:-N} = Y ]) && \
 	cd $(LIB_DIR) && \
-	npm version "$$VERSION" && \
+	npm version "$$NEXT_VERSION" && \
 	cd $(CURRENT_DIR) && \
-	git add package.json $(LIB_DIR)package.json
+	git add package.json && \
+	git add $(LIB_DIR)/package.json && \
+	git commit -m "$(1) release: $$NEXT_VERSION" && \
+	git tag "v$$NEXT_VERSION" -m "Version $$NEXT_VERSION" && \
+	git push && \
+	git push --tags origin
 
 	# If answer is not "yes": reset version (= dry-run)
 	# else: continue and update lib package and make release tag on github
