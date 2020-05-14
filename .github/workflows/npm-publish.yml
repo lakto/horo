@@ -60,3 +60,7 @@ jobs:
       - run: cd ${{env.dist-directory}} && npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: smartlyio/github-release-notes-action@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
