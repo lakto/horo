@@ -9,8 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "test-lib": "ng test --watch=false --browsers=ChromeHeadless --project @lakto/horo",
-    "build-lib": "ng build --prod --project @lakto/horo",
-    "publish-lib": "cd dist/lakto/horo/ && npm publish --access public"
+    "build-lib": "ng build --prod --project @lakto/horo"
   },
   "private": true,
   "dependencies": {
