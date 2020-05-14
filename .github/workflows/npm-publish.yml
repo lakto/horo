@@ -50,8 +50,7 @@ jobs:
     name: Publish on npm if release tag exists
     needs: [install, test, build]
     runs-on: ubuntu-latest
-    if: github.event_name == 'release'
-    # github.ref == 'refs/heads/master' && 
+    if: github.event == 'release' && github.ref == 'refs/heads/master'
     # additional if condition: compare tag with package.json version
     # - name: Get the version
     # id: get_version
