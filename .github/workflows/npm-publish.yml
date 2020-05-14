@@ -4,8 +4,7 @@ name: CI
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
-on: [push, release]
-  types: [published]
+on: [push]
 
 jobs:
   test:
@@ -39,7 +38,7 @@ jobs:
     name: Publish on npm
     needs: [test, build]
     runs-on: ubuntu-latest
-    if: github.event == 'release'
+    if: github.event == 'release' && startsWith(github.ref, 'refs/tags')
     # additional if condition: compare tag with package.json version
     # - name: Get the version
     # id: get_version
