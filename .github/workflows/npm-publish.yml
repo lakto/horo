@@ -1,33 +1,57 @@
 # This is a workflow to publish new package on npm after github release
 
-name: publish
+name: CI
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
-on:
-  release:
-    types: [published]
+on: [push]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build-test-publish:
-    # The type of runner that the job will run on
+  install:
+    name: Install dependencies
     runs-on: ubuntu-latest
-    env:
-      dist-directory: ./dist/lakto/horo/
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-      with:
-        node-version: 12
-        registry-url: https://registry.npmjs.org/
-    - run: npm install
-    - run: npm run build-lib
-    - run: npm run test-lib
-    - run: cd ${{env.dist-directory}} && npm publish --access public
-      env:
-        NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - run: npm install
+
+  test:
+    name: Run tests
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm run test-lib
+        env:
+          TZ: Europe/Zurich
+
+  build:
+    name: Build lib
+    needs: [install, test]
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm run build-lib
+
+  publish:
+    name: Publish on npm if release tag exists
+    needs: [install, test, build]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' && github.event_name == 'release'
+    # additional if condition: compare tag with package.json version
+    # - name: Get the version
+    # id: get_version
+    # run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+    # --> solution from https://github.community/t5/GitHub-Actions/How-to-get-just-the-tag-name/td-p/31595
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - run: npm install
+      - run: npm run build-lib
+      - run: cd ${{env.dist-directory}} && npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
