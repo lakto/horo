@@ -6,7 +6,9 @@ CURRENT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 LIB_DIR := $(shell node -pe "require('$(CURRENT_DIR)/angular.json').projects['@lakto/horo'].root")
 
 define update-version
-	# update version: first as dry-run (which doesn't exist with npm version). The user has to confirm the update
+	# update version: first as dry-run.
+	# The user has to confirm the update.
+	# If everything is fine, it will commit and push the updated packages
 	CURRENT_VERSION=`node -pe "require('./package.json').version"` && \
 	npm version $(1) --preid=$(2) --git-tag-version=false --commit-hooks=false && \
 	NEXT_VERSION=`node -pe "require('./package.json').version"` && \
@@ -19,27 +21,12 @@ define update-version
 	npm version "$$NEXT_VERSION" && \
 	cd $(CURRENT_DIR) && \
 	git add package.json && \
+	git add package-lock.json && \
 	git add $(LIB_DIR)/package.json && \
-	git commit -m "$(1) release: $$NEXT_VERSION" && \
-	git tag "v$$NEXT_VERSION" -m "Version $$NEXT_VERSION" && \
-	git push && \
-	git push --tags origin
-
-	# If answer is not "yes": reset version (= dry-run)
-	# else: continue and update lib package and make release tag on github
-
-	# if $$ans:-n = Y echo 'good' else 'bad' fi
-	#
-	# Confirm the action
-	# update to next version
-
-	# read current version and update package version
-	# VERSION=`node -pe "require('./package.json').version"` && \
-	echo "Current_VERSION $(CURRENT_VERSION)" && \
-	echo "VERSION $$VERSION" && \
-	cd $(LIB_DIR) && \
-	npm version "$$VERSION" && \
-	cd $(CURRENT_DIR)
+	git commit -m "release($(1)): $$NEXT_VERSION" && \
+	git push
+#	git tag "v$$NEXT_VERSION" -m "Version $$NEXT_VERSION" && \
+#	git push --tags origin
 endef
 
 .PHONY: clean
@@ -48,32 +35,32 @@ endef
 npm-install: ## runs 'npm install'
 	@npm install
 
-.PHONY: release-candidate
-release-candidate: ## updates version to next release candidate e.g. from 3.0.0-rc.0 to 3.0.0-rc.1
+.PHONY: next-release-candidate
+next-release-candidate: ## updates version to next release candidate e.g. from 3.0.0-rc.0 to 3.0.0-rc.1
 	@$(call update-version,prerelease,rc)
 
 .PHONY: release-patch
 release-patch: ## updates version to next PATCH version e.g. from 3.0.0 to 3.0.1
 	@$(call update-version,patch)
 
-.PHONY: release-prepatch
-release-prepatch: ## updates version to next PATCH as release-candidate e.g. from 3.0.1 to 3.0.2-rc.0
+.PHONY: prerelease-patch
+prerelease-patch: ## updates version to next PATCH as release-candidate e.g. from 3.0.1 to 3.0.2-rc.0
 	@$(call update-version,prepatch,rc)
 
 .PHONY: release-minor
 release-minor: ## updates version to next MINOR version e.g. from 3.0.0 to 3.1.0
 	@$(call update-version,minor)
 
-.PHONY: release-preminor
-release-preminor: ## updates version to next MINOR as release-candidate e.g. from 3.1.0 to 3.2.0-rc.0
+.PHONY: prerelease-minor
+prerelease-minor: ## updates version to next MINOR as release-candidate e.g. from 3.1.0 to 3.2.0-rc.0
 	@$(call update-version,preminor,rc)
 
 .PHONY: release-major
 release-major: ## updates version to next MAJOR version e.g. from 3.0.0 to 4.0.0
 	@$(call update-version,major)
 
-.PHONY: release-premajor
-release-premajor: ## updates version to next MAJOR as release candidate e.g. from 4.0.0 to 5.0.0-rc.0
+.PHONY: prerelease-major
+prerelease-major: ## updates version to next MAJOR as release candidate e.g. from 4.0.0 to 5.0.0-rc.0
 	@$(call update-version,premajor,rc)
 
 # Re-usable target for yes no prompt. Usage: make .prompt-yesno message="Is it yes or no?"
