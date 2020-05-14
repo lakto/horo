@@ -11,9 +11,11 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  build-test-publish:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    env:
+      dist-directory: ./dist/lakto/horo/
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -26,6 +28,6 @@ jobs:
     - run: npm install
     - run: npm run build-lib
     - run: npm run test-lib
-    - run: npm run publish-lib
+    - run: cd ${{env.dist-directory}} && npm publish --access public
       env:
         NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
