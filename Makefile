@@ -31,10 +31,6 @@ endef
 
 .PHONY: clean
 
-.PHONY: npm-install
-npm-install: ## runs 'npm install'
-	@npm install
-
 .PHONY: next-release-candidate
 next-release-candidate: ## updates version to next release candidate e.g. from 3.0.0-rc.0 to 3.0.0-rc.1
 	@$(call update-version,prerelease,rc)
