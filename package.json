@@ -1,6 +1,6 @@
 {
   "name": "horo",
-  "version": "4.0.0-rc.0",
+  "version": "1.0.0-alpha.4",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -9,7 +9,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "test-lib": "ng test --watch=false --browsers=ChromeHeadless --project @lakto/horo",
-    "update-lib-version": "cd projects/lakto/horo/ && npm version --minor && cd ../../../"
+    "build-lib": "ng build --prod --project @lakto/horo",
+    "publish-lib": "cd dist/lakto/horo/ && npm publish --access public --dry-run"
   },
   "private": true,
   "dependencies": {
