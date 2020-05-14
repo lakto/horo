@@ -36,6 +36,9 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm install
       - run: npm run build-lib
+      - uses: lakto/gren-action@v1.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
   publish:
     name: Publish on npm
@@ -60,7 +63,7 @@ jobs:
       - run: cd ${{env.dist-directory}} && npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - uses: smartlyio/github-release-notes-action@v1.0.0
+      - uses: lakto/gren-action@v1.1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
