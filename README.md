@@ -2,7 +2,7 @@
 
 ---
 
-![npm (scoped)](https://img.shields.io/npm/v/@lakto/horo)
+[![npm version](https://badge.fury.io/js/%40lakto%2Fhoro.svg)](https://www.npmjs.com/package/@lakto/horo)
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.0.5.
 
