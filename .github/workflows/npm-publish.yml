@@ -57,11 +57,11 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm install
       - run: npm run build-lib
-      - if: github.event.release.prerelease
+      - if: "github.event.release.prerelease"
         run: cd ${{env.dist-directory}} && npm publish --tag rc --access public --dry-run
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - if: !github.event.release.prerelease
+      - if: "!github.event.release.prerelease"
         run: cd ${{env.dist-directory}} && npm publish --access public --dry-run
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
