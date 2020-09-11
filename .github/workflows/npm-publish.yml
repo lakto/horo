@@ -74,9 +74,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - if: "!github.event.release.prerelease"
-        run: cd ${{env.dist-directory}} && npm publish --access public --dry-run
+        run: cd ${{env.dist-directory}} && npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - uses: lakto/gren-action@v1.1.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
