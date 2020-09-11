@@ -1,6 +1,6 @@
 {
   "name": "@lakto/horo",
-  "version": "2.2.1",
+  "version": "0.0.0-PLACEHOLDER",
   "peerDependencies": {
     "@angular/common": "^9.0.7",
     "@angular/core": "^9.0.7",
