@@ -1,6 +1,5 @@
 {
   "name": "horo",
-  "version": "0.0.0-PLACEHOLDER",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -12,7 +11,6 @@
     "build-lib": "ng build --prod --project @lakto/horo"
   },
   "private": true,
-  "postpublish" : "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag v$PACKAGE_VERSION && git push --tags",
   "dependencies": {
     "@angular/animations": "~9.0.5",
     "@angular/common": "~9.0.5",
@@ -27,7 +25,7 @@
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.900.7",
+    "@angular-devkit/build-angular": "^0.901.9",
     "@angular-devkit/build-ng-packagr": "~0.900.7",
     "@angular/cli": "~9.0.5",
     "@angular/compiler-cli": "~9.0.5",

@@ -6,14 +6,12 @@ name: CI
 # events but only for the master branch
 on:
   push:
-    branches:
-      - master
   release:
     types: [published]
 
 jobs:
-  test:
-    name: Run test
+  test-build:
+    name: Run test and build lib
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -23,35 +21,24 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm install
       - run: npm run test-lib
+      - run: npm run build-lib
         env:
           TZ: Europe/Zurich
 
-  build:
-    name: Build lib
-    needs: [test]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-          registry-url: https://registry.npmjs.org/
-      - run: npm install
-      - run: npm run build-lib
-
   update_release_draft:
     name: Update release draft
-    needs: [test, build]
+    needs: [test-build]
     runs-on: ubuntu-latest
+    # Drafts your next Release notes as Pull Requests are merged into "master"
+    if: github.ref == 'refs/heads/master'
     steps:
-      # Drafts your next Release notes as Pull Requests are merged into "master"
       - uses: release-drafter/release-drafter@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
   publish:
     name: Publish to npm
-    needs: [test, build]
+    needs: [test-build]
     runs-on: ubuntu-latest
     env:
       dist-directory: ./dist/lakto/horo/
@@ -68,12 +55,15 @@ jobs:
           node-version: 12
           registry-url: https://registry.npmjs.org/
       - run: npm install
+      - name: Get previous tag
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@master"
       - run: npm run build-lib
       - if: "github.event.release.prerelease"
-        run: cd ${{env.dist-directory}} && npm publish --tag rc --access public --dry-run
+        run: cd ${{env.dist-directory}} && npm version ${{steps.previoustag.outputs.tag}} --git-tag-version=false --commit-hooks=false && npm publish --tag rc --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - if: "!github.event.release.prerelease"
-        run: cd ${{env.dist-directory}} && npm publish --access public
+        run: cd ${{env.dist-directory}} && npm version ${{steps.previoustag.outputs.tag}} --git-tag-version=false --commit-hooks=false && npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
