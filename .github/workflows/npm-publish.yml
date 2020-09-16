@@ -36,6 +36,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
+  update_changelog:
+    name: Update CHANGELOG
+    needs: [test-build]
+    runs-on: ubuntu-latest
+    # Drafts your next Release notes as Pull Requests are merged into "master"
+    if: github.ref == 'refs/heads/master'
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - uses: BobAnkh/auto-generate-changelog@master
+      with:
+        REPO_NAME: 'lakto/horo'
+        ACCESS_TOKEN: ${{secrets.GH_TOKEN}}
+
   publish:
     name: Publish to npm
     needs: [test-build]
