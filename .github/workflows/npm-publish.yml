@@ -40,6 +40,8 @@ jobs:
     name: Update CHANGELOG
     needs: [test-build]
     runs-on: ubuntu-latest
+    # Drafts your next Release notes as Pull Requests are merged into "master"
+    if: github.ref == 'refs/heads/master'
     steps:
     - uses: actions/checkout@master
       with:
