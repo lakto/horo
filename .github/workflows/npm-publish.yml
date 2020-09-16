@@ -43,13 +43,25 @@ jobs:
     # Drafts your next Release notes as Pull Requests are merged into "master"
     if: github.ref == 'refs/heads/master'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@master
       with:
-        fetch-depth: 0
-    - uses: BobAnkh/auto-generate-changelog@v0.0.4
+        persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
+        fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+    - name: Update CHANGELOG file using gren
+      uses: lakto/gren-changelog-action@v0.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
-        REPO_NAME: 'lakto/horo'
-        ACCESS_TOKEN: ${{secrets.GH_TOKEN}}
+        options: '--generate --override'
+    - name: Commit CHANGELOG
+      run: |
+        git config --local user.email "github@milchkannen.ch"
+        git config --local user.name "Kilchenmann"
+        git commit -m "docs(changelog): Update CHANGELOG" -a
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 
   publish:
     name: Publish to npm
