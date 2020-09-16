@@ -38,7 +38,7 @@ jobs:
 
   update_changelog:
     name: Update CHANGELOG
-    needs: [test-build]
+    needs: [test-build, update_release_draft]
     runs-on: ubuntu-latest
     # Drafts your next Release notes as Pull Requests are merged into "master"
     if: github.ref == 'refs/heads/master'
@@ -52,7 +52,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
-        options: '--generate --override'
+        options: '--override'
     - name: Commit CHANGELOG
       run: |
         git config --local user.email "github@milchkannen.ch"
