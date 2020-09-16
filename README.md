@@ -1,4 +1,4 @@
-# Horo
+# Horo | special clock
 
 ---
 
