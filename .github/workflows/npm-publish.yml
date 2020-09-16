@@ -46,7 +46,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - uses: BobAnkh/auto-generate-changelog
+    - uses: BobAnkh/auto-generate-changelog@latest
       with:
         REPO_NAME: 'lakto/horo'
         ACCESS_TOKEN: ${{secrets.GH_TOKEN}}
