@@ -43,7 +43,7 @@ jobs:
     # Drafts your next Release notes as Pull Requests are merged into "master"
     if: github.ref == 'refs/heads/master'
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
       with:
         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
         fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
@@ -56,13 +56,15 @@ jobs:
     - name: Commit CHANGELOG
       run: |
         git config --local user.email "github@milchkannen.ch"
-        git config --local user.name "Kilchenmann"
-        git commit -m "docs(changelog): Update CHANGELOG" -a
+        git config --local user.name "daschbot"
+        git add CHANGELOG.md
+        git commit -m "docs(changelog): Update CHANGELOG"
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: release/next-release
+        branch: release/update-changelog
+        force: true
 
   publish:
     name: Publish to npm
@@ -83,15 +85,23 @@ jobs:
           node-version: 12
           registry-url: https://registry.npmjs.org/
       - run: npm install
-      - name: Get previous tag
-        id: previoustag
-        uses: "WyriHaximus/github-action-get-previous-tag@master"
+      - name: Find Tag
+        id: tagger
+        uses: digital-ai/query-tag-action@v2
+        with:
+          include: 'v*'
+          commit-ish: 'HEAD'
+          exact-match: 'true'
+      - name: Show Tag
+        id: display
+        run: |
+          echo 'Output from Find Tag: ${{steps.tagger.outputs.tag}}'
       - run: npm run build-lib
       - if: "github.event.release.prerelease"
-        run: cd ${{env.dist-directory}} && npm version ${{steps.previoustag.outputs.tag}} --git-tag-version=false --commit-hooks=false && npm publish --tag rc --access public
+        run: cd ${{env.dist-directory}} && npm version ${{steps.tagger.outputs.tag}} --git-tag-version=false --commit-hooks=false && npm publish --tag rc --access public --dry-run
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - if: "!github.event.release.prerelease"
-        run: cd ${{env.dist-directory}} && npm version ${{steps.previoustag.outputs.tag}} --git-tag-version=false --commit-hooks=false && npm publish --access public
+        run: cd ${{env.dist-directory}} && npm version ${{steps.tagger.outputs.tag}} --git-tag-version=false --commit-hooks=false && npm publish --access public --dry-run
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

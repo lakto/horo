@@ -27,4 +27,5 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
 ## Release
+
 We use [release-drafter](https://github.com/release-drafter/release-drafter) which updates the next release on each push to master branch.
