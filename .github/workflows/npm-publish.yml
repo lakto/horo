@@ -81,28 +81,33 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
+      - name: Get previous tag
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@master"
       - name: Update CHANGELOG file using gren
         uses: lakto/gren-changelog-action@v0.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           options: '--override'
-      - name: Upload CHANGELOG to release
+      - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GH_TOKEN }}
-          file: CHANGELOG.md
+          file: target/release/CHANGELOG.md
           tag: ${{ github.ref }}
           overwrite: true
+
       - run: npm install
       - run: npm run build-lib
+
       - name: Update version
-        run: cp CHANGELOG.md ${{env.dist-directory}}/ && cd ${{env.dist-directory}} && npm version ${{github.ref}} --git-tag-version=false --commit-hooks=false
+        run: cp CHANGELOG.md ${{env.dist-directory}}/ && cd ${{env.dist-directory}} && npm version ${{steps.previoustag.outputs.tag}} --git-tag-version=false --commit-hooks=false
       - if: "github.event.release.prerelease"
-        run: npm publish ${{env.dist-directory}} --tag rc --access public --dry-run
+        run: npm publish ${{env.dist-directory}} --tag rc --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - if: "!github.event.release.prerelease"
-        run: npm publish ${{env.dist-directory}} --access public --dry-run
+        run: npm publish ${{env.dist-directory}} --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
