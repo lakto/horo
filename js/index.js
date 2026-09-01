@@ -1,3 +1,15 @@
+// Add your own dark/night images to img/backgrounds/ and list their filenames here.
+var backgroundImages = [
+  'img/moon.jpg',
+  'img/the-view.jpg',
+  'img/vorstadt.jpg'
+];
+
+if (backgroundImages.length > 0) {
+  var randomImage = backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
+  document.body.style.backgroundImage = "url('" + randomImage + "')";
+}
+
 setInterval(function() {
   var secondsEl = document.querySelector('.seconds');
   var minutesEl = document.querySelector('.minutes');

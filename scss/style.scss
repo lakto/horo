@@ -1,7 +1,10 @@
 body {
   font-family: 'Roboto';
   color: #eeeeee;
-  background: url('https://source.unsplash.com/all/?night') no-repeat center center fixed;
+  background-color: #111111; // fallback while/if no image is set via JS
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;

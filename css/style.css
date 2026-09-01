@@ -2,7 +2,10 @@ body {
   /* font-family: "Roboto"; */
   font-family: 'Helvetica', 'Arial', 'Lucida Console', 'Trebuchet MS', sans-serif;
   color: #eeeeee;
-  background: url("https://source.unsplash.com/all/?night") no-repeat center center fixed;
+  background-color: #111111; /* fallback while/if no image is set via JS */
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -29,7 +32,7 @@ body {
   left: 76px;
   line-height: 1.62;
   font-size: 42px;
-  z-index: 1;
+  z-index: 4;
   background-color: rgba(222, 222, 222, 0.42);
 }
 .clock .minutes {
