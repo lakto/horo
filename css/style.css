@@ -40,6 +40,7 @@ body {
   line-height: 1.62;
   font-size: 65px;
   z-index: 2;
+  /* border: 2px solid rgb(244, 244, 244);  */
 }
 .clock .hours {
   width: 210px;
